@@ -27,18 +27,18 @@ class Api {
     });
   }
 
-  editUserInfo(data) {
+  setUserInfo(data) {
     return this._request(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
-        name: data.username,
-        about: data.job,
-      }),
-    });
+        name: data.name,
+        about: data.about
+      })
+    })
   }
 
-  editAvatar(data) {
+  setUserAvatar(data) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
@@ -66,9 +66,9 @@ class Api {
     });
   }
 
-  setLike(cardId) {
+  changeLikeCardStatus(cardId, isLiked) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: "PUT",
+      method: `${!isLiked ? 'DELETE' : 'PUT'}`,
       headers: this._headers,
     });
   }

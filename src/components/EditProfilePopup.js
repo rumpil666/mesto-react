@@ -1,22 +1,54 @@
-import React from "react";
+import { useState, useEffect, useContext } from "react";
 import PopupWithForm from "./PopupWithForm";
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
 
-function EditProfilePopup({ isOpen, onClose }) {
+function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
+  const currentUser = useContext(CurrentUserContext);
+  const [userInfoValues, setUserInfoValues] = useState({});
+
+  useEffect(() => {
+    setUserInfoValues(currentUser);
+  }, [currentUser]);
+  
+  function handleChange(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    setUserInfoValues({
+      ...userInfoValues,
+      [name]: value,
+    });
+  }
+
+
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onUpdateUser({
+      name: userInfoValues.name,
+      about: userInfoValues.about,
+    });
+  }
+
   return (
     <PopupWithForm
-      name="username"
+      name="username" //проверить эту строчку
       title="Редактировать профиль"
       subtitle="Сохранить"
       isOpen={isOpen}
       onClose={onClose}
+      onSubmit={handleSubmit}
+      onLoading={onLoading}
     >
       <label className="popup__field">
         <input
+          onChange={handleChange}
           className="popup__input popup__input_type_username"
-          id="author-input"
+          id="name"
           type="text"
-          name="username"
+          name="name"
           placeholder="Имя"
+          value={userInfoValues.name}
           required
           minLength="2"
           maxLength="40"
@@ -25,11 +57,13 @@ function EditProfilePopup({ isOpen, onClose }) {
       </label>
       <label className="popup__field">
         <input
+          onChange={handleChange}
           className="popup__input popup__input_type_about-me"
-          id="about-me-input"
+          id="about"
           type="text"
-          name="job"
+          name="about"
           placeholder="О себе"
+          value={userInfoValues.about}
           required
           minLength="2"
           maxLength="200"
