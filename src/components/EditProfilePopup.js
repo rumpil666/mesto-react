@@ -1,32 +1,23 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import PopupWithForm from "./PopupWithForm";
-import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import useForm from "./UseForm";
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
   const currentUser = useContext(CurrentUserContext);
-  const [userInfoValues, setUserInfoValues] = useState({});
+
+  const { enteredValues, errors, handleChange, isFormValid, resetForm } =
+    useForm();
 
   useEffect(() => {
-    setUserInfoValues(currentUser);
-  }, [currentUser]);
-  
-  function handleChange(e) {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setUserInfoValues({
-      ...userInfoValues,
-      [name]: value,
-    });
-  }
-
-
+    currentUser ? resetForm(currentUser) : resetForm();
+  }, [resetForm, isOpen, currentUser]);
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser({
-      name: userInfoValues.name,
-      about: userInfoValues.about,
+      name: enteredValues.name,
+      about: enteredValues.about,
     });
   }
 
@@ -39,6 +30,8 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
       onClose={onClose}
       onSubmit={handleSubmit}
       onLoading={onLoading}
+      isFormValid={!isFormValid}
+      loadingSubtitle="Сохранение..."
     >
       <label className="popup__field">
         <input
@@ -48,12 +41,16 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
           type="text"
           name="name"
           placeholder="Имя"
-          value={userInfoValues.name}
+          value={enteredValues.name || ""}
           required
           minLength="2"
           maxLength="40"
         />
-        <span className="popup__input-error author-input-error"></span>
+        {errors.name && (
+          <span className="popup__input-error author-input-error">
+            {errors.name}
+          </span>
+        )}
       </label>
       <label className="popup__field">
         <input
@@ -63,12 +60,16 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
           type="text"
           name="about"
           placeholder="О себе"
-          value={userInfoValues.about}
+          value={enteredValues.about || ""}
           required
           minLength="2"
           maxLength="200"
         />
-        <span className="popup__input-error about-me-input-error"></span>
+        {errors.about && (
+          <span className="popup__input-error about-me-input-error">
+            {errors.about}
+          </span>
+        )}
       </label>
     </PopupWithForm>
   );

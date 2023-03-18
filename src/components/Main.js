@@ -1,10 +1,16 @@
 import { useContext } from "react";
-import {CurrentUserContext} from "../contexts/CurrentUserContext"
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import Card from "./Card";
 
-
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onCardLike, onWithConfirmation }) {
-
+function Main({
+  onEditAvatar,
+  onEditProfile,
+  onAddPlace,
+  onCardClick,
+  cards,
+  onCardLike,
+  onWithConfirmation,
+}) {
   const currentUser = useContext(CurrentUserContext);
   const { name, about, avatar } = currentUser;
 
@@ -43,7 +49,13 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, cards, onC
         <div className="elements__list">
           {cards.map((card) => {
             return (
-              <Card onCardClick={onCardClick} key={card._id} card={card} onCardLike={onCardLike} onWithConfirmation={onWithConfirmation} />
+              <Card
+                onCardClick={onCardClick}
+                key={card._id}
+                card={card}
+                onCardLike={onCardLike}
+                onWithConfirmation={onWithConfirmation}
+              />
             );
           })}
         </div>

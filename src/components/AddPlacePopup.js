@@ -1,27 +1,29 @@
-import { useState } from "react";
+import { useEffect, useContext } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import useForm from "./UseForm";
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
-  const [cardValues, setCardValues] = useState({});
+  const currentUser = useContext(CurrentUserContext);
 
-  function handleChange(e) {
-    const name = e.target.name;
-    const value = e.target.value;
+  const { enteredValues, errors, handleChange, isFormValid, resetForm } =
+    useForm();
 
-    setCardValues({
-      ...cardValues,
-      [name]: value,
-    });
-  }
+  useEffect(() => {
+    currentUser ? resetForm(currentUser) : resetForm();
+    enteredValues.title = "";
+    enteredValues.link = "";
+  }, [resetForm, isOpen, currentUser]);
 
   function handleSubmit(e) {
     e.preventDefault();
-  
+
     onAddPlace({
-      name: cardValues.title,
-      link: cardValues.link,
+      name: enteredValues.title,
+      link: enteredValues.link,
     });
-  } 
+  }
+
   return (
     <PopupWithForm
       isOpen={isOpen}
@@ -29,8 +31,10 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
       name="card"
       title="Новое место"
       subtitle="Создать"
+      loadingSubtitle="Создание..."
       onSubmit={handleSubmit}
       onLoading={onLoading}
+      isFormValid={!isFormValid}
     >
       <label className="popup__field">
         <input
@@ -42,10 +46,14 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
           required
           minLength="2"
           maxLength="40"
-          value={cardValues.title}
+          value={enteredValues.title || ""}
           onChange={handleChange}
         />
-        <span className="popup__input-error name-image-input-error"></span>
+        {errors.title && (
+          <span className="popup__input-error name-image-input-error">
+            {errors.title}
+          </span>
+        )}
       </label>
       <label className="popup__field">
         <input
@@ -55,10 +63,14 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
           name="link"
           placeholder="Ссылка на изображение"
           required
-          value={cardValues.link}
+          value={enteredValues.link || ""}
           onChange={handleChange}
         />
-        <span className="popup__input-error url-image-input-error"></span>
+        {errors.link && (
+          <span className="popup__input-error url-image-input-error">
+            {errors.link}
+          </span>
+        )}
       </label>
     </PopupWithForm>
   );

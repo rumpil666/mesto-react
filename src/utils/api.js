@@ -33,9 +33,9 @@ class Api {
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
-        about: data.about
-      })
-    })
+        about: data.about,
+      }),
+    });
   }
 
   setUserAvatar(data) {
@@ -68,7 +68,7 @@ class Api {
 
   changeLikeCardStatus(cardId, isLiked) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: `${!isLiked ? 'DELETE' : 'PUT'}`,
+      method: `${!isLiked ? "DELETE" : "PUT"}`,
       headers: this._headers,
     });
   }

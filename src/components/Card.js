@@ -1,35 +1,38 @@
-import React, {useContext} from "react";
-import {CurrentUserContext} from "../contexts/CurrentUserContext";
+import React, { useContext } from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Card({ onCardClick, card, onCardLike, onWithConfirmation }) {
   const currentUser = useContext(CurrentUserContext);
 
   function handleClick() {
     onCardClick(card);
-  };
+  }
 
   function handleLikeClick() {
     onCardLike(card);
-  };
+  }
 
   function handleDeleteClick() {
     onWithConfirmation(card._id);
-  };
+  }
 
   const isOwn = card.owner._id === currentUser._id;
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-  const cardLikeButtonClassName = 
-    `element__like ${isLiked ? 'element__like_active' : ''}`;
+  const cardLikeButtonClassName = `element__like ${
+    isLiked ? "element__like_active" : ""
+  }`;
 
   return (
     <li className="element">
-      {isOwn && <button
-        className="element__delete"
-        onClick={handleDeleteClick}
-        type="button"
-        aria-label="Удалить"
-      />}
+      {isOwn && (
+        <button
+          className="element__delete"
+          onClick={handleDeleteClick}
+          type="button"
+          aria-label="Удалить"
+        />
+      )}
       <img
         onClick={handleClick}
         className="element__item"
